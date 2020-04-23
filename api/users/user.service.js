@@ -3,6 +3,7 @@ const pool = require('../../config/database');
 
 module.exports = {
     findUser: (email, callback) => {
+
         pool.query(
             `select * from users where email = ?`,
             [email],
@@ -55,7 +56,8 @@ module.exports = {
             [email],
             (error, results) => {
                 if (error) {
-                    callback(error);
+                    console.log(error);
+                  return  callback(error);
                 }
                 return callBack(null, results[0]);
             }

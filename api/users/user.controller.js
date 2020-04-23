@@ -82,11 +82,12 @@ module.exports = {
                 return res.json({
                     success: false,
                     data: null,
-                    msg: `User doesn't exist. Are you going to register now?`
+                    msg: `User doesn't exist. 
+                    Are you going to register now?`
                 })
             }
             if (results.active === '1') {
-                const result = compareSync(body.password, results.password);
+                const result = compareSync(body.password,results.password);
                 if (result) {
                     results.password = undefined;
                     const jsontoken = sign({result: results}, 'qwe1234', {

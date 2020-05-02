@@ -27,6 +27,7 @@ module.exports = {
                 let token = crypto.randomBytes(10).toString('hex');
                 body.verify = token;
                 body.active = '0';
+                body.role = 'user';
                 create(body, (err, results) => {
                     if (err) {
                         console.log(err);

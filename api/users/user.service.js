@@ -18,11 +18,12 @@ module.exports = {
 
     create: (data, callback) => {
         pool.query(
-            `insert into users(name, email, password, verify, active)
-            values(?, ?, ?, ?, ?)`,
+            `insert into users(name, email, role, password, verify, active)
+            values(?, ?, ?, ?, ?, ?)`,
             [
                 data.name,
                 data.email,
+                data.role,
                 data.password,
                 data.verify,
                 data.active,

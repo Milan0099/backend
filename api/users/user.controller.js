@@ -3,6 +3,7 @@ const {
     create,
     userVerify,
     getUserByEmail,
+    findEmail,
 
 } = require('./user.service');
 const {genSaltSync, hashSync, compareSync} = require('bcryptjs');
@@ -116,6 +117,16 @@ module.exports = {
                     msg: 'You have to verify. Are you going to verify now?'
                 })
             }
+        })
+    },
+
+    createProfile: (req, res) => {
+        const body = req.body;
+        findEmail(body, (req, response) => {
+            return res.json({
+                success: true,
+                msg: 'Successfully Inserted'
+            })
         })
     }
 };

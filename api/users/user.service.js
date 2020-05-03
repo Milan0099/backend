@@ -65,4 +65,22 @@ module.exports = {
         )
     },
 
+    findEmail: (body, callback) => {
+        const email = body[0].email;
+        pool.query(
+            `update users set firstName = "`+body[0].firstName +`",
+                              lastName = "`+body[0].lastName +`",
+                              city = "`+body[0].yourCity+`"
+              where email = ?`,
+            [email],
+            (err, results) => {
+                if (err) {
+                    // console.log('error',err);
+                    return callback(err)
+                }
+                return callback(null, results)
+            }
+        )
+    }
+
 };

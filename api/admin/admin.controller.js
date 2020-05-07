@@ -9,7 +9,6 @@ module.exports = {
     login: (req, res) => {
         const body = req.body;
         getEmail(body.email, (err, request) => {
-            console.log('result', request);
             if (!request) {
                 return res.json({
                     success: false,

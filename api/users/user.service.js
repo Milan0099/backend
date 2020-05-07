@@ -38,7 +38,6 @@ module.exports = {
     },
 
     userVerify: (code, callback) => {
-        console.log('-code--', code);
         pool.query(
             `update users set active = "1" where verify = ?`,
             [code],
@@ -81,6 +80,77 @@ module.exports = {
                 return callback(null, results)
             }
         )
+    },
+
+    advertise: (data, callback) => {
+        pool.query(
+            `insert into advertise(email, title, featuredImage, description, tags, price, discountedPrice, phoneNumber, location, category, adImage, adVideo, status)
+            values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+                data.email,
+                data.title,
+                data.featured_image,
+                data.ckeditor,
+                data.tags,
+                data.price,
+                data.discounted_price,
+                data.phone_number,
+                data.location,
+                data.category,
+                data.images.join("*"),
+                data.ad_video,
+                data.status
+            ],
+            (error, results) => {
+                if (error) {
+                    console.log('errors', error);
+                    return callback(error)
+                }
+                return callback(null, results)
+            }
+        )
+    },
+
+    getAdv: (email, callback) => {
+        pool.query(
+            `select * from advertise where email = ?`,
+            [email],
+            (err, result) => {
+                if (err) {
+                    return callback(err)
+                }
+                return callback(null, result)
+            }
+        )
+    },
+
+    advStatus: (data, callback) => {
+        const myEmail = data.myEmail;
+        const status = data.status;
+        if (status === 'All') {
+            pool.query(
+                `select * from advertise where email = ?`,
+                [myEmail],
+                (err, result) => {
+                    if (err) {
+                        return callback(err)
+                    }
+                    return callback(null, result)
+                }
+            )
+        }
+        else {
+            pool.query(
+                `select * from advertise where email = ? AND status= ?`,
+                [myEmail, status],
+                (err, result) => {
+                    if (err) {
+                        return callback(err)
+                    }
+                    return callback(null, result)
+                }
+            )
+        }
     }
 
 };

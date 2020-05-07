@@ -4,7 +4,9 @@ const {
     userVerify,
     getUserByEmail,
     findEmail,
-
+    advertise,
+    getAdv,
+    advStatus
 } = require('./user.service');
 const {genSaltSync, hashSync, compareSync} = require('bcryptjs');
 const {sign} = require('jsonwebtoken');
@@ -126,6 +128,35 @@ module.exports = {
             return res.json({
                 success: true,
                 msg: 'Successfully Inserted'
+            })
+        })
+    },
+
+    createAdvertise: (req, res) => {
+        req.body['status'] = 'Pending';
+        advertise(req.body, (req, result) => {
+            return res.json({
+                success: true,
+                msg: 'Successfully Inserted'
+            })
+        })
+    },
+
+    getAllAdv: (req, res) => {
+        const myEmail = req.body.email;
+        getAdv(myEmail, (req, results) => {
+            return res.json({
+                success: true,
+                data: results
+            })
+        })
+    },
+
+    getAdvStatus: (req, res) => {
+        const status = req.body;
+        advStatus(status, (req, results) => {
+            return res.json({
+                msg: results
             })
         })
     }

@@ -10,7 +10,9 @@ const {
     reset,
     advertise,
     getAdv,
-    advStatus
+    advStatus,
+    getInfo,
+    deleteAllInfo
 } = require('./user.service');
 const {genSaltSync, hashSync, compareSync} = require('bcryptjs');
 const {sign} = require('jsonwebtoken');
@@ -46,7 +48,7 @@ module.exports = {
                     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
                     const msg = {
                         to: body.email,
-                        from: 'http://www.ichmachs24.ch/',
+                        from: 'timon0305@outlook.com',
                         subject: 'Account Verification Token',
                         text: 'Hello,'+ body.name + '\n\n' +
                             'Please verify your account code \n\n' + token  + '\n',
@@ -239,6 +241,23 @@ module.exports = {
         advStatus(status, (req, results) => {
             return res.json({
                 msg: results
+            })
+        })
+    },
+
+    getAllInfo: (req, res) => {
+        getInfo(req.body.email, (req, results) => {
+            return res.json({
+                data: results
+            })
+        })
+    },
+
+    deleteInfo: (req, res) => {
+        deleteAllInfo(req.body.email, (req, results) => {
+            return res.json({
+                success: true,
+                msg: 'success'
             })
         })
     }

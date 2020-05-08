@@ -207,6 +207,42 @@ module.exports = {
                 }
             )
         }
+    },
+
+    getInfo: (myEmail, callback) => {
+        pool.query(
+            `select * from advertise where email = ?`,
+            [myEmail],
+            (err, result) => {
+                if (err) {
+                    return callback(err)
+                }
+                return callback(null, result)
+            }
+        )
+    },
+
+    deleteAllInfo: (myEmail, callback) => {
+        pool.query(
+            `delete from advertise where email = ?`,
+            [myEmail],
+            (err, result) => {
+                if (err) {
+                    return callback(err)
+                }
+                pool.query(
+                    `delete from users where email = ?`,
+                    [myEmail],
+                    (error, res) => {
+                        if (error) {
+                            return callback(error)
+                        }
+                        return callback(res)
+                    }
+                );
+                return callback(null, result)
+            }
+        )
     }
 
 };

@@ -9,7 +9,9 @@ const {
     createProfile,
     createAdvertise,
     getAllAdv,
-    getAdvStatus
+    getAdvStatus,
+    getAllInfo,
+    deleteInfo
 } = require('./user.controller');
 const router  = require('express').Router();
 
@@ -34,5 +36,9 @@ router.post('/advertise', createAdvertise);
 router.post('/getAllAdv', getAllAdv);
 
 router.post('/myAdvStatus', getAdvStatus);
+
+router.post('/getAllInfo', getAllInfo);
+
+router.post('/delete', deleteInfo);
 
 module.exports = router;

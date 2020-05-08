@@ -2,8 +2,12 @@ const {
     findUser,
     create,
     userVerify,
+    getEmail,
+    newVerify,
     getUserByEmail,
     findEmail,
+    codeFind,
+    reset,
     advertise,
     getAdv,
     advStatus
@@ -42,7 +46,7 @@ module.exports = {
                     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
                     const msg = {
                         to: body.email,
-                        from: 'timon0305@outlook.com',
+                        from: 'http://www.ichmachs24.ch/',
                         subject: 'Account Verification Token',
                         text: 'Hello,'+ body.name + '\n\n' +
                             'Please verify your account code \n\n' + token  + '\n',
@@ -122,6 +126,84 @@ module.exports = {
         })
     },
 
+    confirmEmail: (req, res) => {
+      getEmail(req.body.email, (req, results) => {
+          if (!req.length) {
+              return res.json({
+                  success: false,
+                  msg: 'Not Exist. You have to register'
+              })
+          }
+          else {
+              return res.json({
+                  success: true,
+                  msg: 'You can verify'
+              })
+          }
+      })
+    },
+
+    rVerify: (req, res) => {
+        let userEmail = req.body.email;
+        let token = crypto.randomBytes(10).toString('hex');
+        req.body['token'] = token;
+        newVerify(req.body, (req, results) => {
+            if (!results.changedRows) {
+                return res.json({
+                    success: false,
+                    msg: 'Server Error'
+                })
+            }
+            else {
+                sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+                console.log(token);
+                const msg = {
+                    to: userEmail,
+                    from: 'timon0305@outlook.com',
+                    subject: 'Account Verification Token',
+                    text: 'Hello,'+ userEmail + '\n\n' +
+                        'Please verify your account code \n\n' + token  + '\n',
+                };
+                sgMail.send(msg);
+
+            }
+        });
+        return res.json({
+            success: true,
+            msg: 'Successfully'
+        })
+
+    },
+
+    findCode: (req, res) => {
+        codeFind(req.body.code, (req, results) => {
+            if (!results.length) {
+                return res.json({
+                    success: false,
+                    msg: 'Mistake Code',
+                    data: ''
+                })
+            } else {
+                return res.json({
+                    success: true,
+                    msg: 'Success',
+                    data: results[0].email
+                })
+            }
+        })
+    },
+
+    rPassword: (req, res) => {
+        const salt = genSaltSync(10);
+        req.body['password'] = hashSync(req.body.password, salt);
+       reset(req.body, (req, results) => {
+           return res.json({
+               success: true,
+               msg: 'Success'
+           })
+       })
+    },
+
     createProfile: (req, res) => {
         const body = req.body;
         findEmail(body, (req, response) => {
@@ -133,7 +215,7 @@ module.exports = {
     },
 
     createAdvertise: (req, res) => {
-        req.body['status'] = 'Pending';
+        req.body['status'] = 'Active';
         advertise(req.body, (req, result) => {
             return res.json({
                 success: true,

@@ -50,6 +50,62 @@ module.exports = {
         )
     },
 
+    getEmail: (email, callback) => {
+      pool.query(
+          `select * from users where email = ?`,
+          [email],
+          (error, result) => {
+              if (error) {
+                  console.log(error)
+              }
+              return callback(result)
+          }
+      )
+    },
+
+    newVerify: (data, callback) => {
+      const email = data.email;
+      const token = data.token;
+      pool.query(
+          `update users set verify = "` + token + `"  where email = ?`,
+          [email],
+          (error, result) => {
+              if (error) {
+                  return callback(error)
+              }
+              return callback(null, result)
+          }
+      )
+    },
+
+    codeFind: (code, callback) => {
+      pool.query(
+          `select * from users where verify = ?`,
+          [code],
+          (err, result) => {
+              if (err) {
+                  return callback(err)
+              }
+              return callback(null, result)
+          }
+      )
+    },
+
+    reset: (code, callback) => {
+        const email = code.email;
+        const password = code.password;
+        pool.query(
+            `update users set password = "` + password + `" where email = ?`,
+            [email],
+            (err, result) => {
+                if (err) {
+                    return callback(err)
+                }
+                return callback(null, result)
+            }
+        )
+    },
+
     getUserByEmail: (email, callBack) => {
         pool.query(
             `select * from users where email = ?`,

@@ -50,6 +50,15 @@ app.post('/api/users/videoFile', upload.single('file'), (req, res, next) => {
     res.send({status: 'OK'})
 });
 
+app.post('/api/users/logoImage', upload.single('file'), (req, res, next) => {
+    const file = req.file;
+    if (!file) {
+        const error = new Error('Please upload a file');
+        console.log('upload error', error );
+        return next(error)
+    }
+    res.send({status: 'successfully uploaded'})
+});
 
 app.use('/api/users', userRouter);
 

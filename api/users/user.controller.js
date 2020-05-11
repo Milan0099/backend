@@ -1,3 +1,4 @@
+
 const {
     findUser,
     create,
@@ -18,6 +19,7 @@ const {genSaltSync, hashSync, compareSync} = require('bcryptjs');
 const {sign} = require('jsonwebtoken');
 const crypto = require('crypto');
 const sgMail = require('@sendgrid/mail');
+const datetime = require('node-datetime');
 
 module.exports = {
     createUser: (req, res) => {
@@ -207,8 +209,8 @@ module.exports = {
     },
 
     createProfile: (req, res) => {
-        const body = req.body;
-        findEmail(body, (req, response) => {
+        // console.log(req.body);
+        findEmail(req.body, (req, response) => {
             return res.json({
                 success: true,
                 msg: 'Successfully Inserted'
@@ -218,10 +220,18 @@ module.exports = {
 
     createAdvertise: (req, res) => {
         req.body['status'] = 'Active';
+        let date_ob = new Date();
+        let date = ("0" + date_ob.getDate()).slice(-2);
+        let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+        let year = date_ob.getFullYear();
+        let hours = date_ob.getHours();
+        let minutes = date_ob.getMinutes();
+        let seconds = date_ob.getSeconds();
+        req.body['publish'] = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds;
         advertise(req.body, (req, result) => {
             return res.json({
                 success: true,
-                msg: 'Successfully Inserted'
+                msg: 'Successfully Published'
             })
         })
     },
@@ -257,7 +267,7 @@ module.exports = {
         deleteAllInfo(req.body.email, (req, results) => {
             return res.json({
                 success: true,
-                msg: 'success'
+                msg: 'successfully removed'
             })
         })
     }

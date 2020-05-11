@@ -121,11 +121,16 @@ module.exports = {
     },
 
     findEmail: (body, callback) => {
-        const email = body[0].email;
+        const email = body.email;
         pool.query(
-            `update users set firstName = "`+body[0].firstName +`",
-                              lastName = "`+body[0].lastName +`",
-                              city = "`+body[0].yourCity+`"
+            `update users set endpoints = "`+body.endpoints +`",
+                              surname = "`+body.surname +`",
+                              phoneNumber = "`+body.phoneNumber+`", 
+                              websiteAddress = "`+ body.websiteAddress +`",
+                              address = "`+ body.address +`", 
+                              postCode = "`+ body.postCode +`",
+                              canton = "` + body.canton +`",
+                              logoName = "` + body.logoName +`"
               where email = ?`,
             [email],
             (err, results) => {
@@ -140,8 +145,8 @@ module.exports = {
 
     advertise: (data, callback) => {
         pool.query(
-            `insert into advertise(email, title, featuredImage, description, tags, price, discountedPrice, phoneNumber, location, category, adImage, adVideo, status)
-            values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            `insert into advertise(email, title, featuredImage, description, tags, price, discountedPrice, phoneNumber, location, category, adImage, adVideo, status, publish)
+            values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 data.email,
                 data.title,
@@ -155,7 +160,8 @@ module.exports = {
                 data.category,
                 data.images.join("*"),
                 data.ad_video,
-                data.status
+                data.status,
+                data.publish
             ],
             (error, results) => {
                 if (error) {
